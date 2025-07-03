@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- Save this as subscribe.html alongside your index.html -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Groova Live Subscription Fallback Page with Google Form" />
+  <title>Groova Live – Subscribe for Updates</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: 'VT323', monospace;
+      color: #000;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      background: #fff;
+      border: 3px solid #000080;
+      padding: 20px;
+      margin: 0 auto;
+      max-width: 600px;
+      box-shadow: 4px 4px #000;
+      text-align: center;
+    }
+    h1 { margin-bottom: 10px; }
+    p { margin: 10px 0; font-size: 14px; }
+    .iframe-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 150%; /* 911/640 ≈ 1.423, rounded to 150% for extra space */
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    .iframe-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    a {
+      display: inline-block;
+      margin-top: 12px;
+      color: #000080;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Groova Live</h1>
+    <p>Our custom API signup is coming soon. In the meantime, please fill out our Google Form to join the list:</p>
+    <!-- Responsive Google Form embed -->
+    <div class="iframe-wrapper">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSdoOySrpY-JpOoOeQjyEIgnTlheAsEhYLPCYvxNp3GhklFdzQ/viewform?embedded=true"
+        title="Groova Live Subscription Form">
+        Loading…
+      </iframe>
+    </div>
+    <a href="index.html">← Back to Groova Loader</a>
+  </div>
+</body>
+</html>
