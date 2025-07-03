@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!-- Save this file as index.html at your site root to serve as the landing page -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Groova Live - Stay in the groove. Sign up to get event updates and tickets." />
+  <title>Groova Live - Interactive Landing</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <!-- Use Unpkg CDN instead of jsDelivr for compatibility with Dreamweaver linting -->
+  <script src="https://unpkg.com/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    body { background: linear-gradient(135deg, #e0e0e0, #ffffff); font-family: 'VT323', monospace;
+      color: black; overflow: hidden; margin: 0; height: 100vh;
+      display: flex; align-items: center; justify-content: center; transition: background 0.5s, color 0.5s; }
+    .dark-mode { background: linear-gradient(135deg, #000000, #202020); color: #fff; }
+    .dark-mode .window { background: #202020; border-color: #FFD700; }
+    .dark-mode .title-bar { background: #FFD700; color: #000; }
+
+    .scene { perspective: 800px; }
+    .window { background: #C0C0C0; border: 3px solid #000080; width: 400px;
+      padding: 20px; box-shadow: 4px 4px #000; transform-style: preserve-3d;
+      transition: transform 0.1s ease-out; cursor: pointer; position: relative; }
+    .logo { display: block; margin: 0 auto 15px; width: 150px; }
+    .title-bar { background: #000080; color: white; padding: 5px;
+      font-size: 18px; text-align: center; margin-bottom: 10px; user-select: none; }
+    .loading-bar { background: white; height: 20px; border: 2px inset #666;
+      margin-top: 10px; position: relative; overflow: hidden; }
+    .progress { background: #000080; height: 100%; width: 0%; transition: width 0.1s; }
+    .text { font-size: 16px; margin-top: 10px; color: black; }
+    .signup { display: none; margin-top: 20px; text-align: center; }
+    .signup input { width: 80%; padding: 8px; margin: 8px 0;
+      border: 2px solid #000080; font-family: 'VT323', monospace; font-size: 16px; }
+    .signup button { padding: 8px 16px; border: none;
+      background: #000080; color: white; font-family: 'VT323', monospace;
+      font-size: 16px; cursor: pointer; }
+    #thank-you { display: none; margin-top: 15px; font-size: 16px; color: black; }
+    .vip-badge { position: absolute; top: 10px; right: 10px; background: gold;
+      color: black; padding: 4px 8px; font-size: 12px; border-radius: 4px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="window" id="loader-window">
+      <div class="vip-badge" id="vip-badge">VIP MODE</div>
+      <img src="data:image/png;base64,PASTE_YOUR_BASE64_STRING_HERE"
+           alt="Groova Live Logo" class="logo" />
+      <div class="title-bar">Groova Live Boot Loader</div>
+      <div class="text">Booting system...</div>
+      <div class="text" id="dynamic-text">Loading vibes.dll</div>
+      <div class="loading-bar" id="loading-bar">
+        <div class="progress" id="progress-bar"></div>
+      </div>
+      <div class="text" id="percent-text">0%</div>
+      <div class="signup" id="signup">
+        <div class="text">Stay in the groove!</div>
+        <form id="signup-form">
+          <input type="text" id="name" name="name" placeholder="Your full name" required />
+          <input type="email" id="email" name="email" placeholder="Your email address" required />
+          <button type="submit">Notify Me</button>
+        </form>
+      </div>
+      <div id="thank-you">Thanks for signing up! We'll keep you updated.</div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    const subscribeUrl = '/api/subscribe';
+    const windowEl = document.getElementById('loader-window');
+    const progressBar = document.getElementById('progress-bar');
+    const percentText = document.getElementById('percent-text');
+    const dynamicText = document.getElementById('dynamic-text');
+    const signupContainer = document.getElementById('signup');
+    const signupForm = document.getElementById('signup-form');
+    const thankYouContainer = document.getElementById('thank-you');
+    const vipBadge = document.getElementById('vip-badge');
+
+    // Sound effect
+    const beep = new Audio('https://freesound.org/data/previews/66/66717_931655-lq.mp3');
+    const messages = ['Loading vibes.dll', 'Initializing rhythm.sys', 'Decrypting groove.bin', 'Finalizing patchwork'];
+
+    // Konami code detection
+    const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiPosition = 0;
+    document.addEventListener('keydown', e => {
+      if (e.key === konami[konamiPosition]) {
+        konamiPosition++;
+        if (konamiPosition === konami.length) unlockVIP();
+      } else konamiPosition = 0;
+      // Toggle dark mode with G
+      if (e.key.toLowerCase() === 'g') document.body.classList.toggle('dark-mode');
+    });
+
+    function unlockVIP() {
+      vipBadge.style.display = 'block';
+      confetti({ particleCount: 200, spread: 100, origin: { y: 0.2 } });
+      const vipLink = document.createElement('div');
+      vipLink.innerHTML = '<p class="text">VIP Pre-Sale: <a href="/pre-sale" target="_blank">Access Here</a></p>';
+      vipLink.style.textAlign = 'center';
+      windowEl.appendChild(vipLink);
+    }
+
+    // Mouse tilt interaction
+    document.body.addEventListener('mousemove', e => {
+      const { innerWidth, innerHeight } = window;
+      const rx = ((e.clientY / innerHeight) - 0.5) * 20;
+      const ry = ((e.clientX / innerWidth) - 0.5) * 20;
+      windowEl.style.transform = `rotateX(${ -rx }deg) rotateY(${ ry }deg)`;
+    });
+
+    // Click to skip load
+    windowEl.addEventListener('click', finishLoading);
+
+    let progressValue = 0;
+    const intervalSpeed = 60;
+    const progressInterval = setInterval(() => {
+      progressValue = Math.min(progressValue + 1, 100);
+      progressBar.style.width = progressValue + '%';
+      percentText.textContent = progressValue + '%';
+      if (progressValue % 25 === 0) {
+        const idx = (progressValue / 25 - 1) % messages.length;
+        dynamicText.textContent = messages[idx];
+        beep.currentTime = 0; beep.play();
+      }
+      if (progressValue === 100) finishLoading();
+    }, intervalSpeed);
+
+    function finishLoading() {
+      clearInterval(progressInterval);
+      signupContainer.style.display = 'block';
+      dynamicText.textContent = 'Ready to groove!';
+      beep.play();
+    }
+
+    signupForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      fetch(subscribeUrl, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        signupContainer.style.display = 'none';
+        thankYouContainer.style.display = 'block';
+        confetti({ particleCount: 150, spread: 60 });
+      })
+      .catch(error => {
+        console.error('Subscription error:', error);
+        alert('Something went wrong. Please try again later.');
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
